@@ -1,4 +1,5 @@
 import 'package:complete_location_feature/screen/current_location.dart';
+import 'package:complete_location_feature/screen/customMarkerScreen.dart';
 import 'package:complete_location_feature/screen/google_place_api_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: GooglePlaceApiScreen(),
+      home: CustomMarkerScreen(),
+      // home: GooglePlaceApiScreen(),
       // home: CurrentLocation(),
     );
   }

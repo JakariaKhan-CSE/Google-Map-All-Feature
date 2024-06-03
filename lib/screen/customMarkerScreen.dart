@@ -17,37 +17,34 @@ class _CustomMarkerScreenState extends State<CustomMarkerScreen> {
   final Completer<GoogleMapController> _controller = Completer();
 
   List<String> images = ['images/school.png', 'images/nabawi-mosque.png',
-  'images/gas-pump', 'images/but-stop.png'
+  'images/gas-pump.png', 'images/bus-stop.png','images/bus-stop.png'
   ];
-  List<String> _name = ['School',"Massjid", "gas-pump", 'Bus-Stop'];
+  List<String> _name = ['School',"Massjid", "gas-pump", 'Bus-Stop','Bus-Stop'];
   final List<Marker> _markers = [
-    const Marker(markerId: MarkerId('School'),
-    position: LatLng(23.235002, 89.131201),
-      infoWindow: InfoWindow(title: "This is school and have washroom fasility")
-    )
+    // const Marker(markerId: MarkerId('School'),
+    // position: LatLng(23.235002, 89.131201),
+    //   infoWindow: InfoWindow(title: "This is school and have washroom fasility")
+    // )
   ];
   final List<LatLng> _latlng = const[
     LatLng(23.235002, 89.131201),
     LatLng(23.234080, 89.123882 ),
     LatLng(23.236686, 89.115458),
-    LatLng(23.219979, 89.162004)
+    LatLng(23.219979, 89.162004),
+    LatLng(23.219979, 89.162004),
   ];
 
   static const CameraPosition _initialCameraPositionPoint = CameraPosition(
       target: LatLng(23.234715, 89.126871),
     zoom: 15
   );
-  // Future<Uint8List> getByteFromAssets(String path, int width)async{
-  //   ByteData data = await rootBundle.load(path);
-  //   ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetHeight: width);
-  //
-  // }
-  Future<Uint8List> getByteFromAssets(String path, int width)async{
+
+  Future<Uint8List?> getByteFromAssets(String path, int width)async{
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetHeight: width);
     ui.FrameInfo fi = await codec.getNextFrame();
+return (await fi.image.toByteData(format: ui.ImageByteFormat.png))?.buffer.asUint8List();
 
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List;
   }
   @override
   void initState() {
@@ -55,13 +52,17 @@ class _CustomMarkerScreenState extends State<CustomMarkerScreen> {
     super.initState();
     loadData();
   }
-  void loadData(){
+  void loadData()async{
     for(int i=0; i<images.length; i++)
       {
+        print(i);
+        print(images[i]);
+        print(_latlng[i]);
+        final Uint8List? markerIcon = await getByteFromAssets(images[i], 60);
         _markers.add(Marker(markerId: MarkerId(i.toString()),
         position: _latlng[i],
-          icon: BitmapDescriptor.defaultMarker,
-          infoWindow: InfoWindow(title: "This is title "+_name[i])
+          icon: BitmapDescriptor.fromBytes(markerIcon!),
+          infoWindow: InfoWindow(title: "This is title ${i} "+_name[i])
         ));
       }
   }
